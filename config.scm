@@ -75,4 +75,4 @@
                          (mount-point "/home")
                          (device (uuid "4a6451e3-12da-4139-9faa-c78c936c9e58"
                                        (type "ext4"))))
-                        %base-file-systems)))
+                        %base-file-systems))))
