@@ -25,18 +25,38 @@
 
   ;; System-wide installed packages. Users can also install packages
   ;; under their own account using 'guix search KEYWORD' and 'guix install PACKAGE'.
-  (packages (append (list (specification->package "ripgrep"))
+  (packages (append (list (specification->package "hyprland") (specification->package "greetd") (specification->package "wlgreet"))
                     %base-packages))
 
   ;; System services configuration.
   (services
-   (append (list
-            (service openssh-service-type)
-            (service network-manager-service-type)
-            (service wpa-supplicant-service-type)
-            (service ntp-service-type)
-            (service cups-service-type))
-           %base-services))
+   (append
+    (list
+     (service greetd-service-type
+              (greetd-configuration
+               (terminals
+                (list
+                 (greetd-terminal-configuration
+                  (terminal-vt "1")
+                  (terminal-switch #t)
+                  (default-session-command
+                   (greetd-wlgreet-session
+                    (wlgreet wlgreet)
+                    (command (file-append hyprland "/bin/hyprland"))
+                    (command-args '("--config" "/etc/hypr/hyprland.conf"))
+                    (output-mode "all")
+                    (scale 1)
+                    (background '(0 0 0 0.9))
+                    (headline '(1 1 1 1))
+                    (prompt '(1 1 1 1))
+                    (prompt-error '(1 1 1 1))
+                    (border '(1 1 1 1))
+                    (extra-env '(("XDG_SESSION_TYPE" . "wayland") ("XDG_SEAT" . "seat0") ("XDG_VTNR" . "1"))))))))))
+     (service network-manager-service-type)
+     (service wpa-supplicant-service-type)
+     (service ntp-service-type)
+     (service cups-service-type))
+    %base-services))
 
   (bootloader (bootloader-configuration
                (bootloader grub-bootloader)
